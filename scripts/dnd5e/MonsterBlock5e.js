@@ -76,6 +76,7 @@ export default class MonsterBlock5e extends dnd5e.applications.actor.ActorSheet5
 		this.prepMovement(data);
 		this.prepSenses(data);
 		this.updateDamageImmunityResistanceVulnerabilityText(data);
+		this.setupConditionImmunityText(data);
 
 		data.flags = {};
 		data.allFlags = [];
@@ -380,6 +381,14 @@ export default class MonsterBlock5e extends dnd5e.applications.actor.ActorSheet5
 			trait.visible = trait.physical || regularTypes.size > 0;
 		});
 	}
+
+	setupConditionImmunityText(data)
+	{
+		const trait = data.system.traits["ci"];
+		trait.selected = trait.value;
+		trait.visible = trait.selected.size > 0;
+	}
+	
 	/**
 	 * This method creates MenuItems and populates the target menu for trait lists.
 	 *
@@ -705,7 +714,7 @@ export default class MonsterBlock5e extends dnd5e.applications.actor.ActorSheet5
 		html.find(".profile-image").click((event) => {
 			event.preventDefault();
 
-			new ImagePopout(event.target.currentSrc, {
+			new ImagePopout(this.actor.img, {
 				title: this.actor.name,
 				shareable: true,
 				uuid: this.actor.uuid
@@ -894,6 +903,7 @@ export default class MonsterBlock5e extends dnd5e.applications.actor.ActorSheet5
 		const entity = this.lastSelection.entity ? `[data-entity="${this.lastSelection.entity}"]` : "";
 		if (key) this.selectElement(html.find(`${key}${entity}`)[0]);
 
+		html.find("img[data-edit]").unbind("click");
 		html.find(".editor-content img").click((event) => {
 			event.preventDefault();
 			let imgSource = event.target.src;
